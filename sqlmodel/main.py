@@ -23,6 +23,9 @@ from typing import (
     Union,
     cast,
     overload,
+    Literal,
+    get_origin,
+    get_args,
 )
 
 from pydantic import BaseModel, EmailStr
@@ -52,7 +55,7 @@ from sqlalchemy.orm.decl_api import DeclarativeMeta
 from sqlalchemy.orm.instrumentation import is_instrumented
 from sqlalchemy.sql.schema import MetaData
 from sqlalchemy.sql.sqltypes import LargeBinary, Time, Uuid
-from typing_extensions import Literal, deprecated, get_origin
+from typing_extensions import deprecated
 
 from ._compat import (  # type: ignore[attr-defined]
     IS_PYDANTIC_V2,
@@ -651,6 +654,15 @@ def get_sqlalchemy_type(field: Any) -> Any:
 
     type_ = get_type_from_field(field)
     metadata = get_field_metadata(field)
+
+    org_type = get_origin(type_)
+    if org_type is Literal:
+        child_types = list({type(x) for x in get_args(type_)})
+        if len(child_types) != 1:
+            raise RuntimeError(
+                "Cannot have a Literal with multiple types as a SQLAlchemy field"
+            )
+        type_ = child_types[0]
 
     # Check enums first as an enum can also be a str, needed by Pydantic/FastAPI
     if issubclass(type_, Enum):
