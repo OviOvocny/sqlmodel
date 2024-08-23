@@ -248,7 +248,7 @@ def Field(
     sa_type: Union[Type[Any], UndefinedType] = Undefined,
     sa_column_args: Union[Sequence[Any], UndefinedType] = Undefined,
     sa_column_kwargs: Union[Mapping[str, Any], UndefinedType] = Undefined,
-    schema_extra: Optional[Dict[str, Any]] = None,
+    json_schema_extra: Optional[Dict[str, Any]] = None,
 ) -> Any: ...
 
 
@@ -294,7 +294,7 @@ def Field(
     sa_type: Union[Type[Any], UndefinedType] = Undefined,
     sa_column_args: Union[Sequence[Any], UndefinedType] = Undefined,
     sa_column_kwargs: Union[Mapping[str, Any], UndefinedType] = Undefined,
-    schema_extra: Optional[Dict[str, Any]] = None,
+    json_schema_extra: Optional[Dict[str, Any]] = None,
 ) -> Any: ...
 
 
@@ -340,7 +340,7 @@ def Field(
     discriminator: Optional[str] = None,
     repr: bool = True,
     sa_column: Union[Column, UndefinedType] = Undefined,  # type: ignore
-    schema_extra: Optional[Dict[str, Any]] = None,
+    json_schema_extra: Optional[Dict[str, Any]] = None,
 ) -> Any: ...
 
 
@@ -384,9 +384,9 @@ def Field(
     sa_column: Union[Column, UndefinedType] = Undefined,  # type: ignore
     sa_column_args: Union[Sequence[Any], UndefinedType] = Undefined,
     sa_column_kwargs: Union[Mapping[str, Any], UndefinedType] = Undefined,
-    schema_extra: Optional[Dict[str, Any]] = None,
+    json_schema_extra: Optional[Dict[str, Any]] = None,
 ) -> Any:
-    current_schema_extra = schema_extra or {}
+    current_json_schema_extra = json_schema_extra or {}
     field_info = FieldInfo(
         default,
         default_factory=default_factory,
@@ -422,7 +422,7 @@ def Field(
         sa_column=sa_column,
         sa_column_args=sa_column_args,
         sa_column_kwargs=sa_column_kwargs,
-        **current_schema_extra,
+        json_schema_extra=current_json_schema_extra,
     )
     post_init_field_info(field_info)
     return field_info
